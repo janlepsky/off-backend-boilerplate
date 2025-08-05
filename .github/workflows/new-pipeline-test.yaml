@@ -23,11 +23,6 @@ jobs:
       contents: write
       packages: write
     steps:
-      - name: Get last commit hash
-        id: lastHash
-        run: |
-          LAST_HASH=$(git rev-parse --short HEAD)
-          echo "LAST_HASH=$LAST_HASH" >> $GITHUB_ENV
       - id: containerRegistryLogin
         name: Login to Container Registry
         uses: docker/login-action@v3
