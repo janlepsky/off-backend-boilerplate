@@ -15,7 +15,6 @@ env:
   MO_REGISTRY_URL: ghcr.io/janlepsky
   MO_IMAGE_NAME: image-janlepsky-off-backend-boilerplate-dev
   MO_API_KIND: workspace
-  MO_API_TOKEN_EXPIRES_AT__ABDBCCDE5AD1874D2A45: '2299-05-21T08:30:05.000Z'
 jobs:
   build-image:
     runs-on: ubuntu-latest
