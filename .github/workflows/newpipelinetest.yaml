@@ -15,6 +15,8 @@ env:
   MO_REGISTRY_URL: ghcr.io/janlepsky
   MO_IMAGE_NAME: newimage
   MO_API_KIND: workspace
+  MO_API_TOKEN_EXPIRES_AT__7392FCC10D3B5B66BF13: '2299-05-21T14:48:03.000Z'
+  MO_SERVICE__7392FCC10D3B5B66BF13: H4sIAAAAAAAAA13MQW7DIBSE4bvMGtTa2IZ43U03vcMDP7vIMSDAidood6/SVF50+4/muyHmhYL/pupjeJ8wolNGE9letmruZWd0K81p6OVs7DzZpum4ZQi4814q599Lq5XhvhnkQK2TnVMsrTJaWj2/DrpTJzYKAteY15LI8QdtjBHbESCQucQ9O8Z4w+rDg33jdI5fG4cKgfD8TEcrf/EJjIDAkuOeMIJSKi+XBgIXzsXH8JjvhxH46mKo5ANnv9HC/6R1tyxTjhvXT96LLJXcivsPM1nUpCwBAAA=
 jobs:
   build-image:
     runs-on: ubuntu-latest
@@ -47,3 +49,15 @@ jobs:
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
           build-args: VERSION=${{ env.VERSION }}
+      - id: releaseWithMogenius-7392FCC10D3B5B66BF13
+        name: Release with mogenius
+        uses: mogenius/mogenius-release-action@v1
+        with:
+          dev: true
+          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
+          kind: Deployment
+          namespace: kube-prometheus-stack
+          resourceName: newcontainerimage
+          containerName: newcontainerimage
+          keyKind: ${{ env.MO_API_KIND }}
+          token: ${{ secrets.MO_API_TOKEN__7392FCC10D3B5B66BF13__NEWPIPELINETEST }}
