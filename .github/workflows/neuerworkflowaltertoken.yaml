@@ -15,6 +15,8 @@ env:
   MO_REGISTRY_URL: ghcr.io/janlepsky
   MO_IMAGE_NAME: newpipenew
   MO_API_KIND: workspace
+  MO_API_TOKEN_EXPIRES_AT__F5F1D98CFCC63DFDB152: '2299-05-21T16:19:27.000Z'
+  MO_SERVICE__F5F1D98CFCC63DFDB152: H4sIAAAAAAAAA12PQW7DIBQF7/LWoNaADWGdTTe9A+BP5CYGBHaqJsrdKzeRF93O04z07sj15NJ0c8uU08cICyWNds73XMjYc2W04OYw9DwaH0ffdYoEgSFc1rZQ/VOElob6buCDE4GrIIl7aTT3Or4PWskDGQmG71zPrbhAn24mWMw7AEOlltcaCPaO85S27JHKJf/MlBYwpKcz7qy94DNgAYZTzWuBhSulvV07MFyptimnbX7sjS9abotb4+y2B/8yL/j4BTcmtJAaAQAA
 jobs:
   build-image:
     runs-on: ubuntu-latest
@@ -62,3 +64,15 @@ jobs:
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
           build-args: VERSION=${{ env.VERSION }}
+      - id: releaseWithMogenius-F5F1D98CFCC63DFDB152
+        name: Release with mogenius
+        uses: mogenius/mogenius-release-action@v1
+        with:
+          dev: true
+          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
+          kind: Deployment
+          namespace: master
+          resourceName: jetztaufmaster
+          containerName: jetztaufmaster
+          keyKind: ${{ env.MO_API_KIND }}
+          token: ${{ secrets.MO_API_TOKEN__F5F1D98CFCC63DFDB152__NEUERWORKFLOWALTERTOKEN }}
