@@ -64,18 +64,6 @@ jobs:
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
           build-args: VERSION=${{ env.VERSION }}
-      - id: releaseWithMogenius-C4DB7B206D806D9EACF2
-        name: Release with mogenius
-        uses: mogenius/mogenius-release-action@v1
-        with:
-          dev: true
-          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
-          kind: Deployment
-          namespace: dev
-          resourceName: pipetest
-          containerName: nginx
-          keyKind: ${{ env.MO_API_KIND }}
-          token: ${{ secrets.MO_API_TOKEN__C4DB7B206D806D9EACF2__FRESH_PIPELINE }}
       - id: releaseWithMogenius-52C158B457A75869C0B7
         name: Release with mogenius
         uses: mogenius/mogenius-release-action@v1
