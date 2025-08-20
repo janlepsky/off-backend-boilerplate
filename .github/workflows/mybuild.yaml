@@ -63,7 +63,7 @@ jobs:
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
-          build-args: VERSION=${{ env.VERSION }}
+          build-args: VERSION=${{ env.VERSION  }}
       - id: releaseWithMogenius-D15BAB67EA1CF81792A6
         name: Release with mogenius
         uses: mogenius/mogenius-release-action@v1
@@ -73,6 +73,6 @@ jobs:
           kind: Deployment
           namespace: influxdb
           resourceName: my-container-image-7q0qnq
-          containerName: my-container-image-7q0qnq
+          containerName: redis
           keyKind: ${{ env.MO_API_KIND }}
           token: ${{ secrets.MO_API_TOKEN__D15BAB67EA1CF81792A6__MYBUILD }}
