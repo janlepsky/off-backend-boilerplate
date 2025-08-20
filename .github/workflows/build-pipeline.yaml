@@ -15,8 +15,6 @@ env:
   MO_REGISTRY_URL: ghcr.io/janlepsky
   MO_IMAGE_NAME: myapp
   MO_API_KIND: workspace
-  MO_API_TOKEN_EXPIRES_AT__E66FE16DB2B8712F08B6: '2299-06-05T08:08:55.000Z'
-  MO_SERVICE__E66FE16DB2B8712F08B6: H4sIAAAAAAAAA12MTW7DIBQG7/KtjRpswD/rbLrpHR7wEqHYgMBOm0a5e+W0yqLbGc3ckcqZYvimNaT47jHh1HetM4pE1ysjlG9ZWGudUMNhJK0k+96hgZu3unJ5Jgdvda/JiLYbtFB6IEG6d0IOUluj5CjNiAafqVxqJscftDAm5JB5DpFXrisaFK5pK44x3XEJcR8fOc/ptnDcffyt/IvVP/h8YgIanEvaMiZQzvXtKtHgyqWGFHf9eD2WG+X8rw7xNG9f3uLxA9yWr3AVAQAA
 jobs:
   build-image:
     runs-on: ubuntu-latest
@@ -64,15 +62,3 @@ jobs:
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
             ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
           build-args: VERSION=${{ env.VERSION }}
-      - id: releaseWithMogenius-E66FE16DB2B8712F08B6
-        name: Release with mogenius
-        uses: mogenius/mogenius-release-action@v1
-        with:
-          dev: false
-          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
-          kind: Deployment
-          namespace: influxdb
-          resourceName: myapp
-          containerName: myapp
-          keyKind: ${{ env.MO_API_KIND }}
-          token: ${{ secrets.MO_API_TOKEN__E66FE16DB2B8712F08B6__BUILD_PIPELINE }}
