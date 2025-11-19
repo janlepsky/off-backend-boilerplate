@@ -17,8 +17,6 @@ env:
   MO_API_KIND: workspace
   MO_API_TOKEN_EXPIRES_AT__612BB0EA09D47983EA4F: '2299-06-05T09:47:43.000Z'
   MO_SERVICE__612BB0EA09D47983EA4F: H4sIAAAAAAAAA12MQW6DMBQF7/LW/irYBjuss+mmdzDmg9wEG9mQKo1y9yqlYtHlm6eZB1KeXAzfbg0pvg/ooJU1zvUNSTU2pK2RZE9tQ6Ptx6Gva82SIeCvW1k5/yrSKMtN3VLrpCftFVOvrKHejFVrtDqxVRD4SvlSFuf5w82MDvMBIJC5pC17RvfAJcRX9szLNd1njisE4u4MByt/cA90gMCU07agg1uW8narIXDjXEKKr/t5NOY7+RRXFyJnCrObmORQVVL/K366uM/y2s8frqnq/iwBAAA=
-  MO_API_TOKEN_EXPIRES_AT__01B7448A75C385BEAA7D: '2299-08-02T11:30:40.000Z'
-  MO_SERVICE__01B7448A75C385BEAA7D: H4sIAAAAAAAAA12My27DIBRE/2XWoNYYJ5R1Nt30Hy5wsVBiQGCnjyj/XiWpsuhudGbmXFDaTDn90JpKfg+w0KPZE7lJqjFOUpu9kuZtN8loXAxuGDQrhoA/bX3ldr+4kbwK5KUJFKSOr046NTmpiLzXHHnYjRD4LO3YK3n+oIVh0ajXBIHGvWzNM+wFx5RvxgPXU/leOK8QyI95eLL+B+8yWEBgbmWrsKBa+8t5gMCZW08l3+rr05HnlL/+vQMv5ZGvv9Gp4/YPAQAA
 jobs:
   build-image:
     runs-on: ubuntu-latest
@@ -78,15 +76,3 @@ jobs:
           containerName: nginx
           keyKind: ${{ env.MO_API_KIND }}
           token: bearer ${{ secrets.MO_API_TOKEN__612BB0EA09D47983EA4F__SHINYBUILDPIPE }}
-      - id: releaseWithMogenius-01B7448A75C385BEAA7D
-        name: Release with mogenius
-        uses: mogenius/mogenius-release-action@v1
-        with:
-          dev: true
-          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
-          kind: Deployment
-          namespace: demospace
-          resourceName: nginx
-          containerName: nginx
-          keyKind: ${{ env.MO_API_KIND }}
-          token: bearer ${{ secrets.MO_API_TOKEN__01B7448A75C385BEAA7D__SHINYBUILDPIPE }}
