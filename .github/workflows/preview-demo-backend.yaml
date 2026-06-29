@@ -1,0 +1,78 @@
+name: Build, Package, Release (preview-demo-backend.yaml)
+description: Build and release a Docker image for AMD64 architecture without semantic release.
+'on':
+  release:
+    types:
+      - created
+  push:
+    branches:
+      - dev
+env:
+  VERSION: 0.0.1
+  MO_DOCKERFILE: Dockerfile
+  MO_DOCKERCONTEXT: .
+  MO_REGISTRY_AUTH_URL: https://ghcr.io
+  MO_REGISTRY_URL: ghcr.io/janlepsky
+  MO_IMAGE_NAME: preview-demo-backend
+  MO_API_KIND: workspace
+  MO_API_TOKEN_EXPIRES_AT__3BB81024EBB8D882E0E5: '2026-09-27T18:29:30.000Z'
+  MO_SERVICE__3BB81024EBB8D882E0E5: H4sIAAAAAAAAA12NPW/DIBiE/8vNRvEH1IS5S5eO3V/gdYVsAwI7URrlv1dOparqcsOje+7uSOWTYviiLaT45mEgBz0SWSX6YVJC6rEX+vyixKTt5G3XSe4ZDdyy143LU+HOSt/qSUh1hDyzsNJb4Yj6cWg7OSqNBtdU5prJ8TutDIONaW07NChc014cw9wxh3hMvnJe0m3luKFBXvZCCwz8L61oQDl8cKkhRRhQzvV0OdYirfy88TBb2fnxg2CQC18CX4XnNQlLbubo/wr/Knh8A1E28nYfAQAA
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: get semversion
+        run: |
+          VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+      - name: Get last commit hash
+        id: lastHash
+        run: |
+          LAST_HASH=$(git rev-parse --short HEAD)
+          echo "LAST_HASH=$LAST_HASH" >> $GITHUB_ENV
+      - id: containerRegistryLogin
+        name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.MO_REGISTRY_AUTH_URL }}
+          username: ${{ secrets.MO_REGISTRY_USER__PREVIEW_DEMO_BACKEND }}
+          password: ${{ secrets.MO_REGISTRY_PAT__PREVIEW_DEMO_BACKEND }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push amd64 image
+        id: buildAndPushImage
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.MO_DOCKERCONTEXT }}
+          file: ${{ env.MO_DOCKERFILE }}
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:latest
+            ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.LAST_HASH }}
+          build-args: VERSION=${{ env.VERSION }}
+      - id: releaseWithMogenius-3BB81024EBB8D882E0E5
+        name: Release with mogenius
+        uses: mogenius/mogenius-release-action@v1
+        with:
+          dev: true
+          image: ${{ env.MO_REGISTRY_URL }}/${{ env.MO_IMAGE_NAME }}:${{ env.VERSION }}
+          kind: Deployment
+          namespace: preview-demo
+          resourceName: preview-demo-backend
+          containerName: preview-demo-backend
+          keyKind: ${{ env.MO_API_KIND }}
+          token: bearer ${{ secrets.MO_API_TOKEN__3BB81024EBB8D882E0E5__PREVIEW_DEMO_BACKEND }}
